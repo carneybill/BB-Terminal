@@ -46,14 +46,15 @@ else
   step "Starting UI on :$UI_PORT"
   ( cd app && nohup npm run dev > /tmp/bbterminal-ui.log 2>&1 & )
   printf "  ${DIM}waiting for UI"
-  for i in $(seq 1 30); do
-    if curl -s -o /dev/null "http://127.0.0.1:$UI_PORT/"; then
+  # Vite binds to localhost (IPv6 ::1 on Node 17+); check via localhost not 127.0.0.1
+  for i in $(seq 1 60); do
+    if curl -s -o /dev/null "http://localhost:$UI_PORT/"; then
       printf "${RST}\n"; ok "UI up"; break
     fi
     printf "."; sleep 1
-    if [ "$i" = "30" ]; then
+    if [ "$i" = "60" ]; then
       printf "${RST}\n"
-      fail "UI didn't respond within 30s. See /tmp/bbterminal-ui.log"
+      fail "UI didn't respond within 60s. See /tmp/bbterminal-ui.log"
     fi
   done
 fi
