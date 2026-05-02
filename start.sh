@@ -62,8 +62,11 @@ fi
 # -------- Open browser --------
 sleep 1
 URL="http://localhost:$UI_PORT/"
-if command -v open >/dev/null 2>&1; then open "$URL"
-elif command -v xdg-open >/dev/null 2>&1; then xdg-open "$URL"
+# Skip auto-open if launcher.command is handling browser lifecycle itself.
+if [ -z "${BBTERMINAL_NO_OPEN:-}" ]; then
+  if command -v open >/dev/null 2>&1; then open "$URL"
+  elif command -v xdg-open >/dev/null 2>&1; then xdg-open "$URL"
+  fi
 fi
 
 cat <<EOF
